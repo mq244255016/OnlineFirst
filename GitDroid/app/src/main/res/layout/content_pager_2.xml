@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/bubble1"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_120"/>
+        android:layout_marginTop="30dp"/>
 
     <ImageView
         android:id="@+id/ivBubble2"
@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/bubble2"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/ivBubble1"
+        android:layout_below="@id/ivBubble1"
         android:layout_marginTop="@dimen/dp_10"/>
 
     <ImageView
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/bubble3"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/ivBubble2"
+        android:layout_below="@id/ivBubble2"
         android:layout_marginTop="@dimen/dp_10"/>
 
 
