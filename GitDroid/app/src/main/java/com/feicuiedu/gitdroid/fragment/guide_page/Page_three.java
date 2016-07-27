@@ -60,7 +60,7 @@ public class Page_three extends FrameLayout {
 
 
             }
-        },3000);
+        },1500);
 
         postDelayed(new Runnable() {
             @Override
