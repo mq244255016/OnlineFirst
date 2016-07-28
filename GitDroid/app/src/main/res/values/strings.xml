@@ -1,4 +1,8 @@
 <resources>
+    <string name="togle_opne">打开</string>
+    <string name="togle_close">关闭</string>
+
+
     <string name="app_name">GitDroid</string>
 
     <string name="login_github">登录GitHub</string>
