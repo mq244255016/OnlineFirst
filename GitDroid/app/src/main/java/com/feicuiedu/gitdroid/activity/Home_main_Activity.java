@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.Toast;
+import android.widget.ImageView;
 
 import com.feicuiedu.gitdroid.R;
 import com.feicuiedu.gitdroid.base.BaseActivity;
@@ -19,6 +19,7 @@ import com.feicuiedu.gitdroid.login.LoginActivity;
 import com.feicuiedu.gitdroid.login.UserRepo;
 import com.feicuiedu.gitdroid.util.ActivityUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -38,9 +39,13 @@ public class Home_main_Activity extends BaseActivity implements NavigationView.O
     ActionBarDrawerToggle toogle;
     Home_News_Fragment home_news_fragment;
 
+    private ImageLoader imageLoader;//按照网上的方法进行实例化，不然会出现没有初始化的错误
+
 
     private ActivityUtils activityUtils;//袁超所创建爱你工具类
     private Button btnLogin;//这是抽屉当中的登陆按钮
+
+    private ImageView ivIcon;
 
 
     @Override
@@ -79,9 +84,18 @@ public class Home_main_Activity extends BaseActivity implements NavigationView.O
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         toggle.syncState();// 根据drawerlayout同步其当前状态
 
-        //登陆按钮的点击
-        btnLogin = ButterKnife.findById(navigationView.getHeaderView(0), R.id.btnLogin);
-        ivIcon = ButterKnife.findById(navigationView.getHeaderView(0), R.id.ivIcon);
+        /*
+        登陆按钮的点击
+         */
+
+        //这是网上找到的find  navigation中的控件
+        View headerLayout = navigationView.inflateHeaderView(R.layout.layout_nav_header_main);
+        btnLogin = (Button) headerLayout.findViewById(R.id.btnLogin);
+        ivIcon= (ImageView) headerLayout.findViewById(R.id.ivIcon);
+
+        //袁超的方法，这里先注释掉
+//        btnLogin = ButterKnife.findById(btnLogin.getHeaderView(0), R.id.btnLogin);
+//        ivIcon = ButterKnife.findById(navigationView.getHeaderView(0), R.id.ivIcon);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 activityUtils.startActivity(LoginActivity.class);
@@ -91,23 +105,25 @@ public class Home_main_Activity extends BaseActivity implements NavigationView.O
 
     }
 
-    private NavigationView.OnNavigationItemSelectedListener navigationListener = new NavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.github_hot_repo:
-                    Toast.makeText(Home_main_Activity.this, "最热门", Toast.LENGTH_SHORT).show();
-                    break;
-                case R.id.github_hot_coder:
-                    Toast.makeText(Home_main_Activity.this, "开发者", Toast.LENGTH_SHORT).show();
-                    break;
-                case R.id.github_trend:
-                    Toast.makeText(Home_main_Activity.this, "流行趋势", Toast.LENGTH_SHORT).show();
-                    break;
-            }
-            return false;
-        }
-    };
+    //自己之前写的在NavigationView当中的一些mneu的监听，这里注释掉
+//    private NavigationView.OnNavigationItemSelectedListener navigationListener = new NavigationView.OnNavigationItemSelectedListener() {
+//        @Override
+//        public boolean onNavigationItemSelected(MenuItem menuItem) {
+//            switch (menuItem.getItemId()) {
+//
+//                case R.id.github_hot_repo:
+//                    Toast.makeText(Home_main_Activity.this, "最热门", Toast.LENGTH_SHORT).show();
+//                    break;
+//                case R.id.github_hot_coder:
+//                    Toast.makeText(Home_main_Activity.this, "开发者", Toast.LENGTH_SHORT).show();
+//                    break;
+//                case R.id.github_trend:
+//                    Toast.makeText(Home_main_Activity.this, "流行趋势", Toast.LENGTH_SHORT).show();
+//                    break;
+//            }
+//            return false;
+//        }
+//    };
 
     public void showFramgent(){
         FragmentManager fm=getSupportFragmentManager();
@@ -129,7 +145,12 @@ public class Home_main_Activity extends BaseActivity implements NavigationView.O
         getSupportActionBar().setTitle(UserRepo.getUser().getName());
         // 设置用户头像
         String photoUrl = UserRepo.getUser().getAvatar();
-        ImageLoader.getInstance().displayImage(photoUrl, ivIcon);
+
+        //授权后修改头像出现错误，使用前必须初始化设置,以下两局是按照网上的方法进行修改
+        imageLoader =ImageLoader.getInstance();
+        imageLoader.init(ImageLoaderConfiguration.createDefault(this));
+
+        imageLoader.getInstance().displayImage(photoUrl, ivIcon);
     }
 
     @Override

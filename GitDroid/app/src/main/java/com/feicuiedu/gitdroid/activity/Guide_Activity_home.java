@@ -5,6 +5,7 @@ import android.widget.Button;
 
 import com.feicuiedu.gitdroid.R;
 import com.feicuiedu.gitdroid.base.BaseActivity;
+import com.feicuiedu.gitdroid.login.LoginActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -44,7 +45,7 @@ public class Guide_Activity_home extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnLogin:
-
+                intentWhere(this, LoginActivity.class,0);
                 break;
             case R.id.btnEnter:
                 intentWhere(this,Home_main_Activity.class,0);
