@@ -42,4 +42,15 @@ dependencies {
     //上拉加载更多
     compile 'com.vinaysshenoy:mugen:1.0.2'
 
+    //okHttp网络获取数据第三方
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+
+    //gson一键解析，解析时要注意自己创建的类中的变量名要和网上的一致，或写@SerializedName方法
+    compile 'com.google.code.gson:gson:2.7'
+
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+
+    //图片操作的第三方，可以直接将地址转换为一个图片等多种功能
+    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+
 }

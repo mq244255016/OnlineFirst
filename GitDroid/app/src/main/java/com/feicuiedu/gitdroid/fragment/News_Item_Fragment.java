@@ -10,11 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.feicuiedu.gitdroid.Logical_Layer.News_Fragment_LoadMore_Logic;
 import com.feicuiedu.gitdroid.Logical_Layer.News_Fragment_Logic;
 import com.feicuiedu.gitdroid.R;
 import com.feicuiedu.gitdroid.adapter.News_Fragment_List_Adapter;
-import com.feicuiedu.gitdroid.myinterface.News_refresh;
+import com.feicuiedu.gitdroid.myinterface.News_Load_More_Interface;
+import com.feicuiedu.gitdroid.myinterface.News_Refresh_And_LoadMore;
 import com.mugen.Mugen;
 import com.mugen.MugenCallbacks;
 
@@ -33,7 +33,7 @@ import in.srain.cube.views.ptr.header.StoreHouseHeader;
  * 覆写里面所需要的方法。在用逻辑层判断方法的实现时间，这边在调用逻辑层
  * 完成mvp设计模式。
  */
-public class News_Item_Fragment extends Fragment implements News_refresh {
+public class News_Item_Fragment extends Fragment implements News_Refresh_And_LoadMore {
     View view;
     @Bind(R.id.lvRepos)
     ListView lvRepos;
@@ -48,7 +48,9 @@ public class News_Item_Fragment extends Fragment implements News_refresh {
 
     News_Fragment_List_Adapter mListAdapter;
     News_Fragment_Logic mNews_Logic;//逻辑层的方法，视图的刷新
-    News_Fragment_LoadMore_Logic mNews_LadMore_logic;//上拉加载更多的方法
+
+    News_Load_More_Interface news_load_more_interface;
+
 
     @Nullable
     @Override
@@ -64,11 +66,13 @@ public class News_Item_Fragment extends Fragment implements News_refresh {
     public void inDada(){
         mListAdapter=new News_Fragment_List_Adapter(getContext());
 
+
         //逻辑层方法，用来实现下拉刷新
         mNews_Logic=new News_Fragment_Logic(News_Item_Fragment.this);
 
-        //上拉加载更多的逻辑层方法实例化
-        mNews_LadMore_logic=new News_Fragment_LoadMore_Logic(footerView);
+
+
+
 
 
     };
@@ -125,6 +129,7 @@ public class News_Item_Fragment extends Fragment implements News_refresh {
      */
 
     //显示正常加载出来的内容
+    //下拉刷新的视图-----------------------------------------------------------------------
     @Override
     public void showCorrectData(){
         ptrClassicFrameLayout.setVisibility(View.VISIBLE);
@@ -168,24 +173,28 @@ public class News_Item_Fragment extends Fragment implements News_refresh {
 
     };
 
-    //下拉加载更多的方法
+//---------更多-----------下拉刷新结束
+
+
+    //上拉加载更多的方法-----------------------------------------------------
     public void newsLoadMore(){
         footerView=new FooterView(getContext());
+        //第三方，判断状态
         Mugen.with(lvRepos, new MugenCallbacks() {
             @Override
             //判断滑动到底部，进行对应的操作
             public void onLoadMore() {
                 //触发逻辑层里面的加载更多的方法
-                mNews_LadMore_logic.loadMoreData();
+                mNews_Logic.loadMore();
 
             }
 
             @Override
             //是否在加载，避免重复的加载
             public boolean isLoading() {
-                return lvRepos.getFooterViewsCount()>0;
+                //返回第一个是确定上面有值，第二个是确定他的状态
+                return lvRepos.getFooterViewsCount()>0&&footerView.isLoading();
             }
-
             @Override
             //是否所有数据已经加载
             public boolean hasLoadedAllItems() {
@@ -194,11 +203,46 @@ public class News_Item_Fragment extends Fragment implements News_refresh {
         }).start();
     }
 
+
+
+    @Override
+    public void showLoadingMore() {
+        lvRepos.addFooterView(footerView);
+        footerView.loading();
+    }
+
+    @Override
+    public void showLoadingMoreError() {
+        footerView.loadError("加载错误");
+    }
+
+    @Override
+    public void showLoadingNull() {
+        footerView.loadNoMore();
+
+    }
+
+    @Override
+    public void hideShowLoading() {
+        lvRepos.removeFooterView(footerView);
+
+
+    }
+
+    @Override
+    public void addMoreData(List<String> list) {
+        //加载更多
+        mListAdapter.setList(list);
+        Log.i("shangla",list.size()+"这是上拉加载更多的");
+        mListAdapter.notifyDataSetChanged();
+
+    }
+
+
     @Override
     //解除绑定
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
-
 }
