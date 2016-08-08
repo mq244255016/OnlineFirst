@@ -11,6 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.feicuiedu.gitdroid.R;
+import com.feicuiedu.gitdroid.entity.Repo;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,7 @@ import butterknife.ButterKnife;
  */
 public class News_Fragment_List_Adapter extends BaseAdapter {
     Context Ct;
-    List<String> list;
+    List<Repo> list;//直接从网上拿到的数据的类型
     LayoutInflater layoutInflater;
 
     public News_Fragment_List_Adapter(Context ct) {
@@ -32,13 +34,22 @@ public class News_Fragment_List_Adapter extends BaseAdapter {
         layoutInflater = (LayoutInflater) Ct.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public List<String> getList() {
+    public List<Repo> getList() {
         return list;
     }
 
-    public void setList(List<String> list) {
+    public void setList(List<Repo> list) {
         this.list = list;
     }
+
+    /*
+    自己写的清空的方法
+     */
+    public void clear(){
+        list.clear();
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public int getCount() {
@@ -47,23 +58,29 @@ public class News_Fragment_List_Adapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return list.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Log.i("adapter","进入了方法");
 
-            convertView=layoutInflater.inflate(R.layout.layout_item_repo,null);
+            convertView=layoutInflater.inflate(R.layout.layout_item_repo,parent,false);
 
            ViewHolder vh=new ViewHolder(convertView);
-            vh.tvRepoName.setText(list.get(position));
-        Log.i("adapter",list.size()+"这是适配器的list长度");
+            vh.tvRepoName.setText(list.get(position).getFullName());//仓库的名字
+            vh.tvRepoInfo.setText(list.get(position).getDescription());//仓库的信息
+            vh.tvRepoStars.setText(list.get(position).getStarCount()+"");//点赞的人数，这里记得要加“”因为是int类型
+
+        //用ImageLoader来把网络地址转化成图片
+        ImageLoader.getInstance().displayImage(list.get(position).getOwner().getAvatar(),vh.ivIcon);
+
+        Log.i("adapter", list.size() + "这是适配器的list长度");
 
 
         return convertView;

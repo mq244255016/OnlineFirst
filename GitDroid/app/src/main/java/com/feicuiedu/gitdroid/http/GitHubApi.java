@@ -1,6 +1,8 @@
 package com.feicuiedu.gitdroid.http;
 
+import com.feicuiedu.gitdroid.Logical_Layer.HotUser_Info;
 import com.feicuiedu.gitdroid.entity.AccessTokenResult;
+import com.feicuiedu.gitdroid.entity.RepoResult;
 import com.feicuiedu.gitdroid.entity.User;
 
 import retrofit2.Call;
@@ -9,6 +11,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 /**
  * 没错，这是一个接口
@@ -17,7 +20,7 @@ import retrofit2.http.POST;
  * Created by MMQ on 2016/7/30.
  */
 public interface GitHubApi {
-
+    String  URL="https://api.github.com/";
     //GitHub开发者，申请的时候填写（重定向返回是的一个标记）
     String CALL_BACK="mq";
 
@@ -54,7 +57,27 @@ public interface GitHubApi {
     Call<User> getUserInfo();
 
 
+    /**
+     * 获取仓库里面的数据
+     * Param query 查询参数(language:java)
+     * @Param pageId 查询页数据(从1开始)
+     */
 
+    @GET("/search/repositories")
+    Call<RepoResult> searchRepos(
+            @Query("q")String query,//这里的q是Api当中显示必须要传入的
+            @Query("page") int pageId);//这个是拼接传入的页数
+
+
+
+    /*
+    获取热门开发者的数据，通过粉丝来查询
+     */
+    @GET("/search/users")
+    Call<HotUser_Info> hotUserBack(
+            @Query("q") String flower,
+            @Query("page") int pageId
+    );
 
 
 

@@ -13,8 +13,9 @@ import android.widget.TextView;
 import com.feicuiedu.gitdroid.Logical_Layer.News_Fragment_Logic;
 import com.feicuiedu.gitdroid.R;
 import com.feicuiedu.gitdroid.adapter.News_Fragment_List_Adapter;
-import com.feicuiedu.gitdroid.myinterface.News_Load_More_Interface;
+import com.feicuiedu.gitdroid.entity.Repo;
 import com.feicuiedu.gitdroid.myinterface.News_Refresh_And_LoadMore;
+import com.feicuiedu.gitdroid.entity.Language;
 import com.mugen.Mugen;
 import com.mugen.MugenCallbacks;
 
@@ -49,7 +50,24 @@ public class News_Item_Fragment extends Fragment implements News_Refresh_And_Loa
     News_Fragment_List_Adapter mListAdapter;
     News_Fragment_Logic mNews_Logic;//逻辑层的方法，视图的刷新
 
-    News_Load_More_Interface news_load_more_interface;
+//    News_Load_More_Interface news_load_more_interface;
+
+
+    //自定义的一个Key,之后要通过这个KEY,才能拿到数据
+    private static final String KEY_LANGUAGE = "key_language";
+
+    //自定义的单例，要通过这个方法才能拿到language。
+    public static News_Item_Fragment getInstance(Language language) {
+        News_Item_Fragment fragment = new News_Item_Fragment();
+        Bundle args = new Bundle();
+        args.putSerializable(KEY_LANGUAGE, language);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    private Language getLanguage() {
+        return (Language) getArguments().getSerializable(KEY_LANGUAGE);
+    }
 
 
     @Nullable
@@ -63,35 +81,30 @@ public class News_Item_Fragment extends Fragment implements News_Refresh_And_Loa
     }
 
     //在onCreate中执行的方法，为了看着清晰。
-    public void inDada(){
-        mListAdapter=new News_Fragment_List_Adapter(getContext());
+    public void inDada() {
+        mListAdapter = new News_Fragment_List_Adapter(getContext());
 
 
         //逻辑层方法，用来实现下拉刷新
-        mNews_Logic=new News_Fragment_Logic(News_Item_Fragment.this);
+        mNews_Logic = new News_Fragment_Logic(this, getLanguage());
 
 
+    }
 
-
-
-
-    };
+    ;
 
     //在onCreate中执行的方法，为了看着清晰。
-    public void setView(){
+    public void setView() {
         lvRepos.setAdapter(mListAdapter);
         initPullToRefresh();
         newsLoadMore();
-    };
+    }
 
-
-
-
-
+    ;
 
 
     //下拉刷新效果的设置
-    public void initPullToRefresh(){
+    public void initPullToRefresh() {
         //使用当前对象做为key，来记录上一次的刷新时间，如果两次下拉时间间隔太短就只执行一次
         ptrClassicFrameLayout.setLastUpdateTimeRelateObject(this);
 
@@ -100,11 +113,11 @@ public class News_Item_Fragment extends Fragment implements News_Refresh_And_Loa
 
         //修改Heard下拉出来的样式
         //用这个对象来修改下拉出现的效果
-        StoreHouseHeader header=new StoreHouseHeader(getContext());
+        StoreHouseHeader header = new StoreHouseHeader(getContext());
         //设置下拉出现的字体
         header.initWithString("I Like" + " MQ");
         //距离四周的距离 左  上  右  下
-        header.setPadding(0,60,0,60);
+        header.setPadding(0, 60, 0, 60);
 
         //酷炫的效果开始了
         ptrClassicFrameLayout.setHeaderView(header);
@@ -116,6 +129,7 @@ public class News_Item_Fragment extends Fragment implements News_Refresh_And_Loa
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
 
+                Log.i("xiala", "触发下拉的监听");
                 //调用逻辑层代码，进行刷新，把当前对象传过去
                 mNews_Logic.refresh();
             }
@@ -131,54 +145,65 @@ public class News_Item_Fragment extends Fragment implements News_Refresh_And_Loa
     //显示正常加载出来的内容
     //下拉刷新的视图-----------------------------------------------------------------------
     @Override
-    public void showCorrectData(){
+    public void showCorrectData() {
         ptrClassicFrameLayout.setVisibility(View.VISIBLE);
         emptyView.setVisibility(View.GONE);
         errorView.setVisibility(View.GONE);
-    };
+    }
+
+    ;
 
     //显示加载错误的时候的内容
     @Override
-    public void showErrorView(String errorMessage){
+    public void showErrorView(String errorMessage) {
         ptrClassicFrameLayout.setVisibility(View.GONE);
         emptyView.setVisibility(View.GONE);
         errorView.setVisibility(View.VISIBLE);
-    };
+    }
+
+    ;
 
     //显示空白时候的内容
     @Override
-    public void showNullView(){
+    public void showNullView() {
         ptrClassicFrameLayout.setVisibility(View.GONE);
         emptyView.setVisibility(View.VISIBLE);
         errorView.setVisibility(View.GONE);
-    };
+    }
+
+    ;
 
 
     //停止刷新,把上面弹出的框收起来
     @Override
-    public void stopRefresh(){
+    public void stopRefresh() {
         ptrClassicFrameLayout.refreshComplete();
     }
 
     //显示提示信息
     @Override
-    public void showMessage(){};
+    public void showMessage(String str) {
+
+    }
+
 
     //刷新数据
     @Override
-    public void refreshData(List<String> data){
+    public void refreshData(List<Repo> data) {
         Log.i("xiala", data + "这是list的长度");
         mListAdapter.setList(data);
         mListAdapter.notifyDataSetChanged();
 
-    };
+    }
+
+    ;
 
 //---------更多-----------下拉刷新结束
 
 
     //上拉加载更多的方法-----------------------------------------------------
-    public void newsLoadMore(){
-        footerView=new FooterView(getContext());
+    public void newsLoadMore() {
+        footerView = new FooterView(getContext());
         //第三方，判断状态
         Mugen.with(lvRepos, new MugenCallbacks() {
             @Override
@@ -193,8 +218,9 @@ public class News_Item_Fragment extends Fragment implements News_Refresh_And_Loa
             //是否在加载，避免重复的加载
             public boolean isLoading() {
                 //返回第一个是确定上面有值，第二个是确定他的状态
-                return lvRepos.getFooterViewsCount()>0&&footerView.isLoading();
+                return lvRepos.getFooterViewsCount() > 0 && footerView.isLoading();
             }
+
             @Override
             //是否所有数据已经加载
             public boolean hasLoadedAllItems() {
@@ -202,7 +228,6 @@ public class News_Item_Fragment extends Fragment implements News_Refresh_And_Loa
             }
         }).start();
     }
-
 
 
     @Override
@@ -230,10 +255,10 @@ public class News_Item_Fragment extends Fragment implements News_Refresh_And_Loa
     }
 
     @Override
-    public void addMoreData(List<String> list) {
+    public void addMoreData(List<Repo> list) {
         //加载更多
         mListAdapter.setList(list);
-        Log.i("shangla",list.size()+"这是上拉加载更多的");
+        Log.i("shangla", list.size() + "这是上拉加载更多的");
         mListAdapter.notifyDataSetChanged();
 
     }

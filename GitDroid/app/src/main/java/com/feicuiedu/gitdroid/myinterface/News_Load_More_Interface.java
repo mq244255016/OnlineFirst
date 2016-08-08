@@ -1,5 +1,7 @@
 package com.feicuiedu.gitdroid.myinterface;
 
+import com.feicuiedu.gitdroid.entity.Repo;
+
 import java.util.List;
 
 /**
@@ -19,6 +21,6 @@ public interface News_Load_More_Interface {
     void hideShowLoading();
 
     //加载数据
-    void addMoreData(List<String> list);
+    void addMoreData(List<Repo> list);
 
 }

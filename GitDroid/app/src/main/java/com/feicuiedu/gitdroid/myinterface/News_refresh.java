@@ -1,5 +1,7 @@
 package com.feicuiedu.gitdroid.myinterface;
 
+import com.feicuiedu.gitdroid.entity.Repo;
+
 import java.util.List;
 
 /**
@@ -24,10 +26,10 @@ public interface News_refresh {
     public abstract void stopRefresh();
 
     //显示提示信息
-    public abstract void showMessage();
+    public abstract void showMessage(String str);
 
     //刷新数据
 
-    public abstract void refreshData(List<String> data);
+    public abstract void refreshData(List<Repo> data);
 
 }

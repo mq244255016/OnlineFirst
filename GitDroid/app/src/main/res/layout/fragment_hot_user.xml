@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="match_parent"
+
+    android:layout_height="match_parent">
+    <!-- 实现上拉刷新的第三方的效果-->
+    <in.srain.cube.views.ptr.PtrClassicFrameLayout
+        android:id="@+id/hot_ser_ptr"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+   <ListView
+       android:id="@+id/hot_user_lv"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:background="@android:color/white"
+       android:visibility="visible"
+       android:divider="@null"></ListView>
+    </in.srain.cube.views.ptr.PtrClassicFrameLayout>
+
+    <TextView
+        android:id="@+id/hot_user_LoadError_Tv"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:text="加载错误"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</FrameLayout>

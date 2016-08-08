@@ -1,11 +1,13 @@
 package com.feicuiedu.gitdroid.adapter;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.view.LayoutInflater;
 
-import java.util.ArrayList;
+import com.feicuiedu.gitdroid.fragment.News_Item_Fragment;
+import com.feicuiedu.gitdroid.entity.Language;
+
 import java.util.List;
 
 /**
@@ -13,35 +15,29 @@ import java.util.List;
  */
 public class Home_News_Vp extends FragmentPagerAdapter {
 //    Context Ct;
-   List<Fragment> list;
-    List<String> tittle;
-    LayoutInflater layoutInflater;
+   List<Language> list;
 
-    public Home_News_Vp(FragmentManager fm) {
+
+
+    public Home_News_Vp(FragmentManager fm ,Context context) {
         super(fm);
-        list=new ArrayList<>();
-        tittle=new ArrayList<>();
+//        list=new ArrayList<>();
+
+        list=Language.getDefaultLanguages(context);
     }
 
-    public List<Fragment> getList() {
+    public List<Language> getList() {
         return list;
     }
 
-    public void setList(List<Fragment> list) {
+    public void setList(List<Language> list) {
         this.list = list;
     }
 
-    public List<String> getTittle() {
-        return tittle;
-    }
-
-    public void setTittle(List<String> tittle) {
-        this.tittle = tittle;
-    }
 
     @Override
     public Fragment getItem(int position) {
-        return list.get(position);
+        return News_Item_Fragment.getInstance(list.get(position)) ;
     }
 
     @Override
@@ -51,6 +47,6 @@ public class Home_News_Vp extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return tittle.get(position) ;
+        return list.get(position).getName() ;
     }
 }

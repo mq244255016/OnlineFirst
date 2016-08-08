@@ -1,6 +1,8 @@
 package com.feicuiedu.gitdroid.http;
 
+import com.feicuiedu.gitdroid.Logical_Layer.HotUser_Info;
 import com.feicuiedu.gitdroid.entity.AccessTokenResult;
+import com.feicuiedu.gitdroid.entity.RepoResult;
 import com.feicuiedu.gitdroid.entity.User;
 
 import okhttp3.OkHttpClient;
@@ -8,6 +10,7 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Field;
+import retrofit2.http.Query;
 
 /**
  * 用Retrofit的话，能基本表现出很多的HTTP基本知识
@@ -39,7 +42,7 @@ public class GitHubClient implements GitHubApi {
                 .build();
 
         Retrofit retrofit=new Retrofit.Builder()
-                .baseUrl("https://api.github.com/")
+                .baseUrl(URL)
                 .client(okHttpClient)
                 //Gson转换器,这个就是一键解析
                 .addConverterFactory(GsonConverterFactory.create())
@@ -48,13 +51,12 @@ public class GitHubClient implements GitHubApi {
         //构建API
         gitHubApi =retrofit.create(GitHubApi.class);
 
-
     }
 
     //这些是实现GitHubApi接口覆写的方法
     @Override
     public Call<AccessTokenResult> getOAuthToken(@Field("client_id") String client, @Field("client_secret") String clientSecret, @Field("code") String code) {
-        return gitHubApi.getOAuthToken(client,clientSecret,code);
+        return gitHubApi.getOAuthToken(client, clientSecret, code);
     }
 
     //返回的用户信息
@@ -62,4 +64,21 @@ public class GitHubClient implements GitHubApi {
     public Call<User> getUserInfo() {
         return gitHubApi.getUserInfo();
     }
+
+
+    /*
+    这是获得仓库类的方法，传入的是页数和必要的一个q，也就是地址，和页数。
+     */
+    @Override
+    public Call<RepoResult> searchRepos(@Query("q") String query, @Query("page") int pageId) {
+        return gitHubApi.searchRepos(query, pageId);
+    }
+
+    @Override
+    public Call<HotUser_Info> hotUserBack(@Query("q") String flower, @Query("page") int pageId) {
+        return gitHubApi.hotUserBack(flower,pageId);
+    }
+
+
+    //
 }

@@ -10,7 +10,7 @@
         android:background="?attr/colorPrimary">
 
         <TextView
-            android:id="@+id/tvGroupType"
+            android:id="@+id/left_Tv"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_48"
             android:layout_alignParentTop="true"
@@ -23,7 +23,7 @@
             android:text="@string/repo_group_all"/>
 
         <ImageButton
-            android:id="@+id/btnFilter"
+            android:id="@+id/right_Btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_filter_list"
